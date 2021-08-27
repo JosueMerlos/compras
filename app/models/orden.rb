@@ -19,6 +19,5 @@ class Orden < ApplicationRecord
 
   belongs_to :usuario
 
-  scope :por_usuario, ->(usuario_id) { where(usuario_id: usuario_id) }
   scope :por_fecha_entrega, ->(fecha_entrega) { where('fecha_entrega::date = ?', fecha_entrega) }
 end
