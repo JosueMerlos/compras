@@ -1,0 +1,1 @@
+class ExceptionApi < StandardError; end
