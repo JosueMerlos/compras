@@ -15,6 +15,7 @@
 # gem 'pg'
 #
 default: &default
+  host: <%= ENV['DB_HOST'] || localhost %>
   adapter: postgresql
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
@@ -81,6 +82,6 @@ test:
 #
 production:
   <<: *default
-  database: compras_production
-  username: compras
-  password: <%= ENV['COMPRAS_DATABASE_PASSWORD'] %>
+  database: <%= ENV['POSTGRES_DB'] || compras_production %>
+  username: <%= ENV['POSTGRES_USER'] || compras_user %>
+  password: <%= ENV['POSTGRES_PASSWORD'] || compras_pass %>

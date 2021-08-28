@@ -1,0 +1,49 @@
+version: "3.8"
+
+x-env-db: &env_db
+  POSTGRES_USER: compras_user
+  POSTGRES_PASSWORD: compras_pass
+  POSTGRES_DB: compras_production
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      <<: *env_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - compras
+
+  app:
+    build:
+      context: .
+    image: my_registry/compras_app
+    environment:
+      <<: *env_db
+      RAILS_ENV: production
+      DB_HOST: postgres
+      SECRET_KEY: dd1bc45bdacfc9e93819cb6baadf1c74
+    command: >
+      sh -c "
+        bundle install;
+        sleep 15;
+        bundle exec rails db:migrate;
+        bundle exec rails db:seed;
+        rm -rf ./tmp;
+        bundle exec rails s -b 0.0.0.0 -p 3000;
+      "
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/opt/app
+    depends_on:
+      - postgres
+    networks:
+      - compras
+
+volumes:
+  postgres-data:
+
+networks:
+  compras:
