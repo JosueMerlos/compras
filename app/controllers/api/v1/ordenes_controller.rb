@@ -29,7 +29,7 @@ class Api::V1::OrdenesController < ApplicationController
 
   def update_estado_pago
     @orden = Orden.find(update_pago_params[:id])
-    raise ExceptionApi, 'It is not a valid estado_pago' unless estado_pago_valido?(update_despacho_params[:estado_pago])
+    raise ExceptionApi, 'It is not a valid estado_pago' unless estado_pago_valido?(update_pago_params[:estado_pago])
 
     @orden.estado_pago = update_pago_params[:estado_pago]
     fecha_pago = DateTime.parse(update_pago_params[:fecha_pago]) rescue nil
