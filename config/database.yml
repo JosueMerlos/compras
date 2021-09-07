@@ -15,7 +15,7 @@
 # gem 'pg'
 #
 default: &default
-  host: <%= ENV['DB_HOST'] || localhost %>
+  host: <%= ENV['DB_HOST'] || '' %>
   adapter: postgresql
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
@@ -59,6 +59,9 @@ development:
 test:
   <<: *default
   database: compras_test
+  host: <%= ENV['POSTGRES_HOST'] || '' %>
+  username: <%= ENV['POSTGRES_USER'] || '' %>
+  password: <%= ENV['POSTGRES_PASSWORD'] || '' %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -82,6 +85,6 @@ test:
 #
 production:
   <<: *default
-  database: <%= ENV['POSTGRES_DB'] || compras_production %>
-  username: <%= ENV['POSTGRES_USER'] || compras_user %>
-  password: <%= ENV['POSTGRES_PASSWORD'] || compras_pass %>
+  database: <%= ENV['POSTGRES_DB'] || 'compras_production' %>
+  username: <%= ENV['POSTGRES_USER'] || 'compras_user' %>
+  password: <%= ENV['POSTGRES_PASSWORD'] || 'compras_pass' %>

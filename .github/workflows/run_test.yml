@@ -1,0 +1,52 @@
+env:
+  RAILS_ENV: test
+  RUBY_VERSION: 2.7.2
+  POSTGRES_USER: postgres
+  POSTGRES_HOST: 127.0.0.1
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: compras_test
+
+name: Ruby Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:alpine
+        ports:
+        - 5432:5432
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      # uses: ruby/setup-ruby@473e4d8fe5dd94ee328fdfca9f8c9c7afc9dae5e
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Show env variables
+      run: echo $RAILS_ENV $POSTGRES_HOST $POSTGRES_USER $POSTGRES_PASSWORD $POSTGRES_DB
+    - name: Migrate database
+      run: bundle exec rails db:migrate
+    - name: Run tests
+      env:
+        SIMPLECOV: true
+      run: bundle exec rspec spec/*
+    - name: Upload coverage results
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: coverage-report
+        path: coverage
